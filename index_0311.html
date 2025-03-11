@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sea Ice Animation</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { display: flex; flex-direction: column; align-items: center; font-family: Arial, sans-serif; }
+        #image-container { width: 80%; text-align: center; margin-bottom: 20px; }
+        img { max-width: 100%; height: auto; }
+        #chart-container { width: 60%; display: flex; justify-content: center; align-items: center; }
+        #chart-container canvas { width: 100% !important; height: 200px !important; }
+        #controls { margin-top: 10px; text-align: center; }
+    </style>
+</head>
+<body>
+    <div id="image-container">
+        <img id="seaIceImage" src="" alt="Sea Ice Frame">
+        <div id="controls">
+            <button onclick="prevFrame()">Previous</button>
+            <button onclick="togglePlay()">Play/Pause</button>
+            <button onclick="nextFrame()">Next</button>
+        </div>
+    </div>
+    <div id="chart-container">
+        <canvas id="seaIceChart"></canvas>
+    </div>
+
+    <script>
+        const years = [
+            1985, 1986, 1987, 1988, 1989, 1990, 1991, 1992, 1993, 1994,
+            1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004,
+            2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014,
+            2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024
+        ];
+        
+        const anomalyData = [
+            0.17, 0.29, 0.31, 0.27, 0.19, 0.07, 0.1, 0.3, 0.07, 0.24,
+            0.05, 0.32, 0.17, 0.13, 0.08, 0.1, 0.18, 0.06, 0.07, 0.05,
+            0.00, 0.03, -0.27, -0.19, -0.04, -0.14, -0.18, -0.41, -0.08, -0.09,
+            -0.19, -0.24, -0.2, -0.12, -0.2, -0.3, -0.08, -0.12, -0.21, -0.19
+        ];
+        
+        const imageFiles = years.map(year => `sea_ice_frames02/Arctic_Sea_Ice_${year}.png`);
+        
+        let currentIndex = 0;
+        let playing = true;
+        let interval;
+        let playbackSpeed = 500; // 加快播放速度 (500ms)
+
+        const ctx = document.getElementById("seaIceChart").getContext("2d");
+        const seaIceChart = new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: years,
+                datasets: [{
+                    label: "Sea Ice Anomaly",
+                    data: anomalyData,
+                    backgroundColor: anomalyData.map(value => value >= 0 ? "blue" : "red"),
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                plugins: {
+                    tooltip: {
+                        enabled: true,
+                        callbacks: {
+                            label: function(tooltipItem) {
+                                return `Anomaly: ${tooltipItem.raw.toFixed(2)}`;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    x: { title: { display: true, text: "Year" } },
+                    y: { title: { display: true, text: "Anomaly" } }
+                },
+                onHover: (event, chartElements) => {
+                    if (!playing && chartElements.length > 0) {
+                        let index = chartElements[0].index;
+                        showFrame(index);
+                    }
+                }
+            }
+        });
+
+        function showFrame(index) {
+            document.getElementById("seaIceImage").src = imageFiles[index];
+            seaIceChart.data.datasets[0].backgroundColor = anomalyData.map((value, i) => i === index ? "yellow" : (value >= 0 ? "blue" : "red"));
+            seaIceChart.update();
+        }
+
+        function nextFrame() {
+            currentIndex = (currentIndex + 1) % imageFiles.length;
+            showFrame(currentIndex);
+        }
+
+        function prevFrame() {
+            currentIndex = (currentIndex - 1 + imageFiles.length) % imageFiles.length;
+            showFrame(currentIndex);
+        }
+
+        function togglePlay() {
+            if (playing) {
+                clearInterval(interval);
+            } else {
+                interval = setInterval(nextFrame, playbackSpeed);
+            }
+            playing = !playing;
+        }
+
+        interval = setInterval(nextFrame, playbackSpeed); // Start auto-play on load
+        showFrame(currentIndex);
+    </script>
+</body>
+</html>
