@@ -86,7 +86,7 @@
         let currentIndex = 0;
         let playing = true;
         let interval;
-        let playbackSpeed = 500; // 加快播放速度 (500ms)
+        let playbackSpeed = 500; 
 
         const ctx = document.getElementById("seaIceChart").getContext("2d");
         const seaIceChart = new Chart(ctx, {
@@ -96,37 +96,35 @@
                 datasets: [{
                     label: "北極海冰變化",
                     data: anomalyData,
-                    backgroundColor: anomalyData.map(value => value >= 0 ? "blue" : "red"),
+                    backgroundColor: anomalyData.map((value, i) => i === currentIndex ? "yellow" : (value >= 0 ? "blue" : "red")),
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false
+                },
+                onHover: (event, chartElements) => {
+                    if (!playing && chartElements.length > 0) {
+                        let index = chartElements[0].index;
+                        showFrame(index);
+                    }
+                },
                 plugins: {
                     title: {
                         display: true,
                         text: "北極海冰變化",
-                        font: { size: 18 },
+                        font: { size: 36 },
                         color: "white"
                     },
                     subtitle: {
                         display: true,
                         text: "(相較於1985~2024年平均)",
-                        font: { size: 14 },
+                        font: { size: 24 },
                         color: "white"
-                    },
-                    tooltip: {
-                        enabled: true,
-                        callbacks: {
-                            label: function(tooltipItem) {
-                                return `Anomaly: ${tooltipItem.raw.toFixed(2)}`;
-                            }
-                        }
                     }
-                },
-                scales: {
-                    x: { title: { display: true, text: "Year", color: "white" } },
-                    y: { title: { display: true, text: "Anomaly", color: "white" } }
                 }
             }
         });
@@ -156,7 +154,7 @@
             playing = !playing;
         }
 
-        interval = setInterval(nextFrame, playbackSpeed); // Start auto-play on load
+        interval = setInterval(nextFrame, playbackSpeed);
         showFrame(currentIndex);
     </script>
 </body>
