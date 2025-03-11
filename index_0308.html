@@ -6,15 +6,18 @@
     <title>Sea Ice Animation</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
-        body { display: flex; flex-direction: column; align-items: center; font-family: Arial, sans-serif; }
-        #image-container { width: 80%; text-align: center; margin-bottom: 20px; }
-        img { max-width: 80%; height: auto; }
-        #chart-container { width: 80%; display: flex; justify-content: center; align-items: center; }
-        #chart-container canvas { width: 80% !important; height: 200px !important; }
-        #controls { margin-top: 10px; text-align: center; }
+        body { display: flex; font-family: Arial, sans-serif; }
+        #chart-container { width: 50%; padding: 20px; display: flex; justify-content: center; align-items: center; }
+        #chart-container canvas { width: 100% !important; height: 400px !important; }
+        #image-container { width: 50%; text-align: center; }
+        img { max-width: 100%; height: auto; }
+        #controls { margin-top: 10px; }
     </style>
 </head>
 <body>
+    <div id="chart-container">
+        <canvas id="seaIceChart"></canvas>
+    </div>
     <div id="image-container">
         <img id="seaIceImage" src="" alt="Sea Ice Frame">
         <div id="controls">
@@ -22,9 +25,6 @@
             <button onclick="togglePlay()">Play/Pause</button>
             <button onclick="nextFrame()">Next</button>
         </div>
-    </div>
-    <div id="chart-container">
-        <canvas id="seaIceChart"></canvas>
     </div>
 
     <script>
