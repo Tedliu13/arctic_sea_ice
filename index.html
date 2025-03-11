@@ -24,6 +24,14 @@
         }
         #image-container { width: 50%; text-align: center; padding: 20px; }
         img { max-width: 100%; height: auto; }
+        #source {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        #source a {
+            color: #1E90FF;
+            text-decoration: none;
+        }
         #chart-container { width: 50%; display: flex; justify-content: center; align-items: center; padding: 20px; }
         #chart-container canvas { width: 100% !important; height: 400px !important; }
         #controls { 
@@ -46,6 +54,7 @@
     <div id="content-container">
         <div id="image-container">
             <img id="seaIceImage" src="" alt="Sea Ice Frame">
+            <div id="source">資料來源：<a href="https://svs.gsfc.nasa.gov/5395/" target="_blank">NASA/Goddard Space Flight Center</a></div>
         </div>
         <div id="chart-container">
             <canvas id="seaIceChart"></canvas>
@@ -97,13 +106,13 @@
                     title: {
                         display: true,
                         text: "北極海冰變化",
-                        font: { size: 34 },
+                        font: { size: 18 },
                         color: "white"
                     },
                     subtitle: {
                         display: true,
                         text: "(相較於1985~2024年平均)",
-                        font: { size: 26 },
+                        font: { size: 14 },
                         color: "white"
                     },
                     tooltip: {
